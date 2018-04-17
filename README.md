@@ -1,3 +1,3 @@
 # Algorithms
 
-This repository is for my UE Cryptography Class
+This repository is for my UE Algorithms Class
