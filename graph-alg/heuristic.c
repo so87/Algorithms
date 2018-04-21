@@ -6,79 +6,71 @@
 #include "stdlib.h"
 
 
-void connected_components(FILE* graph){
-  // find all of the vertices
-  int vertices;
-  fscanf(graph,"%d",&vertices);
-
+void connected_components(FILE* file, int num_vertices, int num_edges){
   // allocate space for your forest based on how many vertices you have
-  struct node* forest = malloc(sizeof(struct node) * vertices);
+  struct node* forest = malloc(sizeof(struct node) * num_vertices);
   
   // for each vertice, make a set
-  for(int j=0;j<vertices;j++){
+  for(int j=0;j<num_vertices;j++){
     make_set(&forest[j]);
   }
 
   // find out how many edges you need to connect to the vertices
-  int edges;
-  fscanf(graph,"%d",&edges);
-  for(int j=0;j<edges;j++){
+  for(int j=0;j<num_edges;j++){
     int v1,v2;
-    fscanf(graph,"%d",&v1);
-    fscanf(graph,"%d",&v2);
+    fscanf(file,"%d",&v1);
+    fscanf(file,"%d",&v2);
 
-    // 
+    // if the neighbors aren't unioned, then union them 
     if(find_set(&forest[v1-1]) != find_set(&forest[v2-1])){
       union_set(&forest[v1-1],&forest[v2-1]);
     }
   }
 
-  // print out the entire forest
-  print(forest,vertices);
-  printf("\n");
-
-  // free up the memory you allocated
-  free(forest);
-}
-
-// 
-void make_set(struct node * v){
-  v->p = v;
-}
-
-// combine two sets together
-void union_set(struct node* v1,struct node *v2){
-  struct node * pi = find_set(v1);
-  struct node * p2 = find_set(v2);
-  p2->p = pi;
-}
-
-// need to search for set to determine if we need to union them 
-struct node * find_set(struct node* v1){
-  if(v1->p == v1){
-    return v1;
-  }
-  return find_set(v1->p);
-}
-
-// print out the entire forest
-void print(struct node * sets,int len){
+  // print out tree 
   printf("[ ");
   // print out the entire forest
-  for(int i=0;i<len;i++){
-    // 
-    if(sets[i].p == &sets[i]){
+  for(int i=0;i<num_vertices;i++){
+    // there is another grouping of elemens in the forest  
+    if(forest[i].p == &forest[i]){
       printf("[");
-      // 
-      for(int j=0;j<len;j++){
-          //  
-          if(find_set(&sets[j]) == &sets[i]){
-          printf("%d ",j+1);
+      // for each vertice
+      for(int j=0;j<num_vertices;j++){
+          // find each node in the vertice 
+          if(find_set(&forest[j]) == &forest[i]){
+            printf("%d",j+1);
+	  if((j+1) != num_vertices)
+	    printf(" ");
         }
       }
       printf("]");
     }
   }
-  printf("]\n");
-} 
+
+  // there is nothing left in the forest
+  printf(" ]\n");
+
+  // free up the memory you allocated
+  free(forest);
+}
+
+// connect the next vertice to the forest 
+void make_set(struct node * vertice){
+  vertice->p = vertice;
+}
+
+// combine two sets together
+void union_set(struct node* top,struct node *bot){
+  struct node * p1 = find_set(top);
+  struct node * p2 = find_set(bot);
+  p2->p = p1;
+}
+
+// need to search for set to determine if we need to union them 
+struct node * find_set(struct node* vertice){
+  if(vertice->p == vertice){
+    return vertice;
+  }
+  return find_set(vertice->p);
+}
 

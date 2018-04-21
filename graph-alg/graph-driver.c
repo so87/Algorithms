@@ -7,6 +7,7 @@
 
 int main(int argc, char **argv){
   
+  printf("-------------\n\n");
 
   FILE * file;
   if(argc == 2){
@@ -15,12 +16,16 @@ int main(int argc, char **argv){
     fscanf(file, "%d", &touples);
 
     for (unsigned int i = 0; i < touples; i++){
-      // call Connected components
-     
- 
-      // print out the answer
+      // get how many vertices 
+      int num_vertices; 
+      fscanf(file, "%d", &num_vertices); 
 
+      // get how many edges
+      int num_edges;
+      fscanf(file, "%d", &num_edges);
 
+      // call Connected componenta
+      connected_components(file, num_vertices, num_edges);     
     }
    }
   else{
@@ -30,7 +35,7 @@ int main(int argc, char **argv){
   }
 
   // FIN
-  printf("--------------\n");
+  printf("\n--------------\n");
   printf("End of program\n");
 
   if(argc == 2)
