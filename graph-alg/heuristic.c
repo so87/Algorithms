@@ -65,9 +65,12 @@ void union_set(struct node* v1,struct node *v2){
   struct node * p1 = find_set(v1);
   struct node * p2 = find_set(v2);
   if (v1->rank > v2->rank) 
-    p2->p = p1;
-  else
-    p1->p = p2;
+    v2->p = p1;
+  else{
+    if (v1->rank == v2->rank)
+	v2->rank = v2->rank + 1;
+    v1->p = p2;
+  }
 }
 
 // need to search for set to determine if we need to union them 
