@@ -23,7 +23,7 @@ void connected_components(FILE* file, int num_vertices, int num_edges){
 
     // if the neighbors aren't unioned, then union them 
     if(find_set(&forest[v1-1]) != find_set(&forest[v2-1])){
-      union_set(&forest[v1-1],&forest[v2-1]);
+        union_set(&forest[v1-1],&forest[v2-1]);
     }
   }
 
@@ -57,20 +57,24 @@ void connected_components(FILE* file, int num_vertices, int num_edges){
 // connect the next vertice to the forest 
 void make_set(struct node * vertice){
   vertice->p = vertice;
+  vertice->rank = 0;
 }
 
 // combine two sets together
-void union_set(struct node* top,struct node *bot){
-  struct node * p1 = find_set(top);
-  struct node * p2 = find_set(bot);
-  p2->p = p1;
+void union_set(struct node* v1,struct node *v2){
+  struct node * p1 = find_set(v1);
+  struct node * p2 = find_set(v2);
+  if (v1->rank > v2->rank) 
+    p2->p = p1;
+  else
+    p1->p = p2;
 }
 
 // need to search for set to determine if we need to union them 
 struct node * find_set(struct node* vertice){
-  if(vertice->p == vertice){
-    return vertice;
-  }
-  return find_set(vertice->p);
+  // path compression
+  if (vertice != vertice->p)
+    vertice->p = find_set(vertice->p);
+  return vertice->p;
 }
 

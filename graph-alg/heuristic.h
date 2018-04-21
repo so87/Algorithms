@@ -6,6 +6,7 @@
 
 struct node {
   struct node* p;
+  int rank;
 };
 
 void connected_components(FILE* file, int num_vertices, int num_edges);
