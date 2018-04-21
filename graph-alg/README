@@ -1,0 +1,4 @@
+"graph-driver" does the connected components with no heuristic
+"heuristic-driver" does the conneced components with the heuristic
+
+simply give each driver an input file

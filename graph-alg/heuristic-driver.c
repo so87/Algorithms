@@ -7,6 +7,7 @@
 
 int main(int argc, char **argv){
   
+  printf("-------------\n\n");
 
   FILE * file;
   if(argc == 2){
@@ -16,11 +17,7 @@ int main(int argc, char **argv){
 
     for (unsigned int i = 0; i < touples; i++){
       // call Connected components
-     
- 
-      // print out the answer
-
-
+      connected_components(file);     
     }
    }
   else{
