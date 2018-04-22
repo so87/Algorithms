@@ -64,12 +64,12 @@ void make_set(struct node * vertice){
 void union_set(struct node* v1,struct node *v2){
   struct node * p1 = find_set(v1);
   struct node * p2 = find_set(v2);
-  if (v1->rank > v2->rank) 
-    v2->p = p1;
+  if (p1->rank > p2->rank) 
+   p2 = p1;
   else{
-    if (v1->rank == v2->rank)
-	v2->rank = v2->rank + 1;
-    v1->p = p2;
+    if (p1->rank == p2->rank)
+	p2->rank = p2->rank + 1;
+    p1 = p2;
   }
 }
 
