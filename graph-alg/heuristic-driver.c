@@ -14,19 +14,12 @@ int main(int argc, char **argv){
     file = fopen(argv[1], "r");
     unsigned int touples = 0;
     fscanf(file, "%d", &touples);
-
+    struct node* forest;
     for (unsigned int i = 0; i < touples; i++){
-      // get how many vertices 
-      int num_vertices; 
-      fscanf(file, "%d", &num_vertices); 
-
-      // get how many edges
-      int num_edges;
-      fscanf(file, "%d", &num_edges);
-
-      // call Connected componenta
-      connected_components(file, num_vertices, num_edges);     
+      // call Connected components
+      connected_components(file, forest);     
     }
+   free(forest);
    }
   else{
    printf("Usage: ./driver <input file>\n");
@@ -38,8 +31,9 @@ int main(int argc, char **argv){
   printf("\n--------------\n");
   printf("End of program\n");
 
-  if(argc == 2)
+  if(argc == 2){
     free(file);
+  }
 
 
   return 0;

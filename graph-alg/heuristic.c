@@ -1,86 +1,96 @@
-// Simon Owens
-// Algorithms
-
-#include "heuristic.h"
 #include "stdio.h"
 #include "stdlib.h"
+#include "stdbool.h"
+#include "heuristic.h"
 
+void connected_components(FILE* file, node* forest){
 
-void connected_components(FILE* file, int num_vertices, int num_edges){
-  // allocate space for your forest based on how many vertices you have
-  struct node* forest;
-  forest = malloc((num_vertices+1)*sizeof(struct node));
+  int num_vertices;; 
+  fscanf(file, "%d", &num_vertices);
+  int num_edges; 
+  fscanf(file, "%d", &num_edges);    
   
-  // for each vertice, make a set
-  for(int j=1;j<num_vertices;j++){
-    forest[j].p = &forest[j];
-    forest[j].rank = 0;
-    forest[j].index = j;
+  // allocate for the forest     
+  forest = malloc((num_vertices + 1) * sizeof(node));            
+
+  for (int i = 1; i <= num_vertices; i++)
+  {
+    make_set(forest, i); 
   }
-
-  int v1,v2;
-
-  // find out how many edges you need to connect to the vertices
-  for(int j=0;j<num_edges;j++){
-    fscanf(file,"%d",&v1);
-    fscanf(file,"%d",&v2);
-
-    // if the neighbors aren't unioned, then union them 
-    if(find_set(&forest[v1])->index != find_set(&forest[v2])->index){
-        union_set(&forest[v1],&forest[v2]);
+  
+  // make sure to cover each edge 
+  int e1,e2;
+  for (int i = 0; i < num_edges; i++){ 
+     // read in the edges from the file 
+     fscanf(file, "%d", &e1);
+     fscanf(file, "%d", &e2); 
+     
+    // this checks if they aren't the same
+    if( (find_set(&forest[e1]))->index != (find_set(&forest[e2]))->index)
+        {
+          // this unions by rank 
+          union_set(&forest[e1],&forest[e2]);         
+        }              
+      
     }
-  }
+    // print out that forest
+    print(forest, num_vertices);
+}    
+    
 
-  // print out tree 
-  printf("[ ");
-  // print out the entire forest
-  for(int i=1;i<num_vertices;i++){
-    // there is another grouping of elemens in the forest  
-    if(forest[i].p->index == forest[i].index){
-      printf("[");
-      // for each vertice
-      for(int j=1;j<num_vertices;j++){
-          // find each node in the vertice 
-          if((find_set(&forest[j]))->index == forest[i].index)
-            printf("%d ",j);
-      }
-      printf("]");
-    }
-  }
-
-  // there is nothing left in the forest
-  printf(" ]\n");
-
-  // free up the memory you allocated
-  free(forest);
+node * find_set(node * v){
+  // this is path compression
+  if (v->index != v->p->index){
+    return v->p = find_set(v->p);      
+  }  
+  return v->p;  
+}
+void make_set(node * forest, int i){
+  forest[i].index = i;
+  forest[i].p = &forest[i];
+  forest[i].rank = 0; 
 }
 
-// connect the next vertice to the forest 
-void make_set(struct node * vertice){
-  vertice->p = vertice;
-  vertice->rank = 0;
-}
-
-void union_set(struct node *v1, struct node *v2){
+// union by rank is in link 
+void union_set(node * v1, node * v2){
   link(find_set(v1), find_set(v2));
 }
 
-// combine two sets together
-void link(struct node* v1,struct node *v2){
-  if (v1->rank > v2->rank) 
-   v2->p = v2->p;
+void link(node * v1, node * v2){
+  // if the first forest has a bigger rank. attach the second to it
+  if (v1->rank > v2->rank){
+    v2->p = v1->p;
+  }
   else{
+    // otherwise, attach the first to the second
     v1->p = v2->p;
-    if(v1->rank == v2->rank)
-    v2->rank = v2->rank +1;
+    if(v1->rank == v2->rank){
+      v2->rank = v2->rank +1; // update the rank
+    }
   }
 }
 
-// need to search for set to determine if we need to union them 
-struct node * find_set(struct node* vertice){
-  // path compression
-  if (vertice->index != vertice->p->index)
-    return vertice->p = find_set(vertice->p);
-  return vertice->p;
+void print(node * forest,int num_vertices){
+  // print out, morse format annoying
+  printf("[ "); 
+  
+  // this is a forest
+  for (int i = 1; i <= num_vertices; i++){   
+    // this is a tree 
+    if(forest[i].p->index == forest[i].index){
+      printf("[ ");
+      for (int j = 1; j <= num_vertices; j++){
+        if ((find_set(&forest[j]))->index == forest[i].index){
+          // printing out value in tree 
+          printf("%d ",j);
+        }
+      }
+      printf("]");
+    }
+  }    
+  // forest is done 
+  printf("]");   
+  printf("\n");
 }
+
 
